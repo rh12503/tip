@@ -1,3 +1,5 @@
 {
-  "presets": ["@babel/preset-env", "minify"]
+  "presets": ["@babel/preset-env", "minify"],
+  "comments": false,
+  "sourceType": "script",
 }

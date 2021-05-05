@@ -4,7 +4,7 @@
   "description": "Triangulated image placeholders",
   "main": "placeholder.js",
   "scripts": {
-    "build": "babel src -d lib"
+    "build": "babel src --out-file-extension .min.js -d lib"
   },
   "repository": {
     "type": "git",
