@@ -23,7 +23,7 @@ All operations are done on the original `img` tag, so any formatting applied to 
 ### CLI
 Install the CLI using the command:
 ```
-go get -u github.com/RH12503/tip-backend
+go get -u github.com/RH12503/tip-backend/tip
 ```
 Generate the placeholder files by running
 ```
