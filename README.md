@@ -1,8 +1,9 @@
-# tip 
-Easy-to-use triangulated image placeholders. 
-
-
-_Not production ready_
+<p align="center">
+  <img src="/assets/tip.svg" width="150px">
+</p>
+<p align="center">
+  Easy-to-use triangulated image placeholders. (_Not production ready_)
+</p>
 
 ## Usage
 
@@ -16,7 +17,7 @@ _Not production ready_
 
 2. For any images with placeholders, change the `src` attribute to `data-src`.
 
-All operations are done on the original `img` tag, so any formatting applied to the original image will be retained!
+The library will look for a placeholder asset at the same location as the original image. All operations are done on the original `img` tag, so any formatting applied to the original image will be retained!
 
 ## Generating placeholders
 
@@ -37,18 +38,10 @@ The placeholder `.tri` files will be created in the same location as the image f
 
 ## Browser support
 
-Taken from https://developer.mozilla.org/
+Every browser that has been updated within the last few years should be supported. 
 
-Chrome: 26, 
-Edge: 12, 
-Firefox: 16, 
-IE: 10, 
-Opera: 12.1, 
-Safari: 9
+| <img src="https://github.com/alrra/browser-logos/raw/main/src/chrome/chrome_256x256.png" width="40px"> | <img src="https://github.com/alrra/browser-logos/raw/main/src/safari/safari_256x256.png" width="40px"> | <img src="https://github.com/alrra/browser-logos/raw/main/src/edge/edge_256x256.png" width="40px"> | <img src="https://github.com/alrra/browser-logos/raw/main/src/firefox/firefox_256x256.png" width="40px"> | <img src="https://github.com/alrra/browser-logos/raw/main/src/opera/opera_256x256.png" width="40px"> | <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Internet_Explorer_10%2B11_logo.svg/1043px-Internet_Explorer_10%2B11_logo.svg.png" width="40px"> 
+| :-: | :-: | :-: | :-: | :-: | :-: |
+| 26 | 9 | 12 | 16 | 12.1 | 10 |
 
-Android Browser: 37, 
-Chrome Android: 26, 
-Firefox for Android: 32, 
-Opera Android: 14, 
-Safari on iOS: 9, 
-Samsung Internet: 1.5
+All major mobile browsers are also supported including: Safari on iOS, Android WebView, Chrome Android & iOS, Firefox for Android, Opera Android, and Samsung Internet. 
