@@ -1,0 +1,2 @@
+# tip 
+Triangulated image placeholders
