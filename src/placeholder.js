@@ -1,86 +1,124 @@
-document.addEventListener('DOMContentLoaded', place);
+window.addEventListener('load', place);
 
 function place() {
-    // Replace all images with the attribute data-place
-    var images = document.querySelectorAll("img[data-place]");
+    var images = document.querySelectorAll("img[data-src]");
+
+    // Test for search engine crawlers
+    if (/bot|googlebot|crawler|spider|robot|crawling/i.test(navigator.userAgent)) {
+        for (var i = 0; i < images.length; i++) {
+            images[i].src = images[i].dataset.src;
+        }
+        return;
+    }
+
+    // Replace all images with the attribute data-src
 
     for (var i = 0; i < images.length; i++) {
         let image = images[i];
 
-        let newImage = image.cloneNode();
+        let objectFit = window.getComputedStyle(image).objectFit
+        let objectPosition = window.getComputedStyle(image).objectPosition;
 
-        let w = newImage.width;
-        let h = newImage.height;
+        var backgroundSize = "contain";
 
-        // Set up container div to hold placeholder
+        if (objectFit && objectPosition) {
+            // Support different object-fit properties
+            switch (objectFit) {
+                case "cover":
+                    backgroundSize = "cover";
+                    break;
+                case "fill":
+                    backgroundSize = "100% 100%";
+                    break;
+                case "none":
+                    backgroundSize = "auto";
+                    break;
+            }
+            image.style.backgroundPosition = objectPosition;
+        }
 
-        let container = document.createElement("div");
-        container.style.display = "inline-block";
-        container.style.width = w + "px"
-        container.style.height = h + "px"
-        container.style.position = "relative"
-
-        // Add a canvas above the image 
-
-        let canvas = document.createElement("canvas");
-        canvas.style.display = "inline-block";
-        canvas.style.position = "absolute";
-        canvas.style.zIndex = 99;
-        canvas.style.transition = "opacity 0.7s";
-
-        container.appendChild(canvas);
-        container.appendChild(newImage);
-
-        image.parentNode.replaceChild(container, image);
+        image.style.backgroundSize = backgroundSize;
+        image.style.opacity = "0";
+        image.style.backgroundRepeat = "no-repeat";
+        image.style.cssText += "transition: background 1s, background-position 0s, background-size 0s !important;";
 
         var xhr = new XMLHttpRequest();
 
         // Look for an asset with the same name and the extension .tri
 
-        let name = image.dataset.place.replace(/\.[^/.]+$/, ".tri");
+        let name = image.dataset.src.replace(/\.[^/.]+$/, ".tri");
 
         xhr.open("GET", name, true);
         xhr.responseType = "arraybuffer";
 
         xhr.onreadystatechange = (resp) => {
             var buffer = resp.currentTarget.response;
+
             if (buffer) {
 
-                // Load the original image
-                newImage.src = newImage.dataset.place;
-
-                newImage.onload = function () {
-                    canvas.style.opacity = "0"; // Hide the canvas after the image is loaded
-                }
-
                 var data = new DataView(buffer);
+                let triangles = parseData(data);
                 let width = data.getUint16(0, true);
                 let height = data.getUint16(2, true);
 
+                let canvas = document.createElement("canvas", { alpha: false });
                 canvas.width = width;
                 canvas.height = height;
+                var blank = canvas.toDataURL();
+                image.src = blank;
 
-                // Set width and height of placeholders
+                renderData(canvas, triangles)
 
-                w = w || h * (width / height);
-                h = h || w * (height / width);
+                image.style.backgroundImage = `url('${canvas.toDataURL("image/jpeg")}')`;
+                image.style.opacity = "1";
 
-                if (!w && !h) {
-                    w = width;
-                    h = height;
+                var imageXhr = new XMLHttpRequest();
+                imageXhr.open("GET", image.dataset.src, true);
+                imageXhr.responseType = "blob";
+                imageXhr.onreadystatechange = (response) => {
+                    var blob = response.currentTarget.response
+                    if (blob) {
+                        var reader = new FileReader();
+                        reader.onloadend = function () {
+                            image.style.backgroundImage = `url(${reader.result})`;
+                            image.ontransitionend = () => {
+                                image.src = reader.result;
+                                image.onload = function () {
+                                    image.style.backgroundImage = '';
+                                }
+                            };
+                        }
+                        reader.readAsDataURL(response.currentTarget.response);
+                    }
                 }
-
-                container.style.width = w + "px"
-                container.style.height = h + "px"
-
-                canvas.style.width = w + "px";
-                canvas.style.height = h + "px";
-
-                render(parseData(data), canvas);
+                imageXhr.send();
             }
         };
         xhr.send();
 
+    }
+}
+
+function renderData(canvas, triangles) {
+    var ctx = canvas.getContext("2d");
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    for (var i = 0; i < triangles.length; i++) {
+        let triangle = triangles[i].triangle;
+        let color = triangles[i].color;
+        let rgb = `rgb(${color[0]}, ${color[1]}, ${color[2]})`;
+
+        ctx.fillStyle = rgb;
+        ctx.strokeStyle = rgb;
+        ctx.lineWidth = 1;
+
+        ctx.beginPath();
+        ctx.moveTo(triangle[0][0], triangle[0][1]);
+        ctx.lineTo(triangle[1][0], triangle[1][1]);
+        ctx.lineTo(triangle[2][0], triangle[2][1]);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
     }
 }
 
@@ -99,25 +137,54 @@ function parseData(data) {
 
     var current = 0;
 
-    for (var i = 20; i < data.byteLength; i += 8) {
-        let face = data.getUint8(i, true) % 3
+    for (var i = 20; i < data.byteLength;) {
+        let parent = triangles[current];
+
+        let dataByte = data.getUint8(i, true);
+
+        i++;
+        let face = (dataByte >> 2) & 3;
 
         let adjacent = triangles[current].triangle;
 
-        triangles.push({
-            triangle: [
-                adjacent[face],
-                adjacent[(face + 1) % 3],
-                [data.getUint16(i + 1, true), data.getUint16(i + 3, true)],
-            ].sort(function (a, b) {
-                if (a[1] == b[1]) {
-                    return a[0] - b[0];
-                }
+        var vertex;
 
-                return a[1] - b[1];
-            }),
-            color: [data.getUint8(i + 5, true), data.getUint8(i + 6, true), data.getUint8(i + 7, true)],
-            remaining: Math.floor(data.getUint8(i, true) / 3),
+        if ((dataByte >> 4) & 1) {
+            vertex = [parent.triangle[face][0] + data.getInt8(i, true), parent.triangle[face][1] + data.getInt8(i + 1, true)];
+            i += 2;
+        } else {
+            vertex = [data.getUint16(i, true), data.getUint16(i + 2, true)];
+            i += 4;
+        }
+
+        var color;
+
+        if ((dataByte >> 5) & 1) {
+            let colorData = data.getUint16(i, true);
+
+            color = [parent.color[0] + (colorData & 63) - 32, parent.color[1] + ((colorData >> 6) & 63) - 32, parent.color[2] + (((colorData >> 12) & 15) | ((dataByte >> 6) & 3) << 4) - 32];
+            i += 2;
+        } else {
+            color = [data.getUint8(i, true), data.getUint8(i + 1, true), data.getUint8(i + 2, true)];
+            i += 3;
+        }
+
+        let triangle = [
+            adjacent[face],
+            adjacent[(face + 1) % 3],
+            vertex,
+        ].sort(function (a, b) {
+            if (a[1] == b[1]) {
+                return a[0] - b[0];
+            }
+
+            return a[1] - b[1];
+        });
+
+        triangles.push({
+            triangle: triangle,
+            color: color,
+            remaining: dataByte & 3,
         });
 
         triangles[current].remaining--;
@@ -125,36 +192,6 @@ function parseData(data) {
             current++;
         }
     }
-    return triangles
-}
 
-function render(triangles, canvas) {
-    var ctx = canvas.getContext("2d", {
-        alpha: false,
-    });
-    let dpi = window.devicePixelRatio;
-    if (dpi > 1) {
-        canvas.width *= dpi;
-        canvas.height *= dpi;
-        ctx.scale(dpi, dpi);
-    }
-
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    for (var i = 0; i < triangles.length; i++) {
-        let triangle = triangles[i].triangle
-        let color = triangles[i].color
-        let rgb = `rgb(${color[0]}, ${color[1]}, ${color[2]})`;
-        ctx.fillStyle = rgb;
-        ctx.strokeStyle = rgb;
-        ctx.lineWidth = 0.5;
-
-        ctx.beginPath();
-        ctx.moveTo(triangle[0][0], triangle[0][1]);
-        ctx.lineTo(triangle[1][0], triangle[1][1]);
-        ctx.lineTo(triangle[2][0], triangle[2][1]);
-        ctx.closePath();
-        ctx.fill();
-        ctx.stroke();
-    }
+    return triangles;
 }
