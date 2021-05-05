@@ -1,0 +1,25 @@
+{
+  "name": "tip",
+  "version": "1.0.0",
+  "description": "Triangulated image placeholders",
+  "main": "placeholder.js",
+  "scripts": {
+    "build": "babel src -d lib"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RH12503/tip.git"
+  },
+  "author": "RH12503",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/RH12503/tip/issues"
+  },
+  "homepage": "https://github.com/RH12503/tip#readme",
+  "devDependencies": {
+    "@babel/cli": "^7.13.16",
+    "@babel/core": "^7.14.0",
+    "@babel/preset-env": "^7.14.1",
+    "babel-preset-minify": "^0.5.1"
+  }
+}
