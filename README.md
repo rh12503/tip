@@ -1,8 +1,8 @@
 <p align="center">
-  <img src="/assets/tip.svg" width="150px">
+  <img src="/assets/tip.svg" width="130px">
 </p>
 <p align="center">
-  Easy-to-use triangulated image placeholders. (_Not production ready_)
+  Easy-to-use triangulated image placeholders. (Not production ready)
 </p>
 
 ## Usage
