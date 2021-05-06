@@ -2,8 +2,10 @@
   <img src="/assets/tip.svg" width="130px">
 </p>
 <p align="center">
-  Easy-to-use triangulated image placeholders. (Not production ready)
+  Triangulated image placeholders (not production ready)
 </p>
+
+tip is an easy-to-use, efficent, and lightweight library for including triangulated image placeholders. It uses a highly-optimized format over 10x smaller than minified SVG.
 
 ## Usage
 
