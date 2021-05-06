@@ -72,26 +72,34 @@ function place() {
                 image.style.backgroundImage = `url('${canvas.toDataURL("image/jpeg")}')`;
                 image.style.opacity = "1";
 
-                var imageXhr = new XMLHttpRequest();
-                imageXhr.open("GET", image.dataset.src, true);
-                imageXhr.responseType = "blob";
-                imageXhr.onreadystatechange = (response) => {
-                    var blob = response.currentTarget.response
-                    if (blob) {
-                        var reader = new FileReader();
-                        reader.onloadend = function () {
-                            image.style.backgroundImage = `url(${reader.result})`;
-                            image.ontransitionend = () => {
-                                image.src = reader.result;
-                                image.onload = function () {
-                                    image.style.backgroundImage = '';
-                                }
-                            };
+                var originalImage = new Image();
+
+                originalImage.src = image.dataset.src;
+
+                originalImage.onload = () => {
+                    var canvas = document.createElement("canvas");
+                    var ctx = canvas.getContext("2d");
+
+                    canvas.width = originalImage.naturalWidth;
+                    canvas.height = originalImage.naturalHeight;
+                    ctx.drawImage(originalImage, 0, 0);
+
+                    image.style.backgroundImage = `url(${canvas.toDataURL("image/jpeg")})`;
+                    image.ontransitionend = () => {
+                        let attributes = image.attributes;
+
+                        for (var i = 0; i < attributes.length; i++) {
+                            let attribute = attributes[i];
+                            if (attribute.nodeName != "src") {
+                                originalImage.setAttribute(attribute.nodeName, attribute.nodeValue);
+                            }
                         }
-                        reader.readAsDataURL(response.currentTarget.response);
-                    }
+                        originalImage.style.background = ''
+                        originalImage.style.opacity = ''
+                        originalImage.style.transition = ''
+                        image.parentNode.replaceChild(originalImage, image);
+                    };
                 }
-                imageXhr.send();
             }
         };
         xhr.send();
