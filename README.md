@@ -7,7 +7,7 @@
 
 ## Usage
 
-1. Add to your the library to your HTML:
+1. Add the library to your HTML:
 ```html 
 <head>
   ...
@@ -15,7 +15,7 @@
 </head>
 ```
 
-2. For any images with placeholders, change the `src` attribute to `data-src`.
+2. Change the `src` attribute to `data-src` for any image with placeholders.
 
 The library will look for a placeholder asset at the same location as the original image. All operations are done on the original `img` tag, so any formatting applied to the original image will be retained!
 
@@ -40,7 +40,7 @@ The placeholder `.tri` files will be created in the same location as the image f
 
 Every browser that has been updated within the last few years should be supported. 
 
-| <img src="https://github.com/alrra/browser-logos/raw/main/src/chrome/chrome_256x256.png" width="40px"> | <img src="https://github.com/alrra/browser-logos/raw/main/src/safari/safari_256x256.png" width="40px"> | <img src="https://github.com/alrra/browser-logos/raw/main/src/edge/edge_256x256.png" width="40px"> | <img src="https://github.com/alrra/browser-logos/raw/main/src/firefox/firefox_256x256.png" width="40px"> | <img src="https://github.com/alrra/browser-logos/raw/main/src/opera/opera_256x256.png" width="40px"> | <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Internet_Explorer_10%2B11_logo.svg/1043px-Internet_Explorer_10%2B11_logo.svg.png" width="40px"> 
+| <img src="https://github.com/alrra/browser-logos/raw/main/src/chrome/chrome_256x256.png" width="40px"> | <img src="https://km.support.apple.com/kb/image.jsp?productid=PL165&size=240x240" width="40px"> | <img src="https://github.com/alrra/browser-logos/raw/main/src/edge/edge_256x256.png" width="40px"> | <img src="https://github.com/alrra/browser-logos/raw/main/src/firefox/firefox_256x256.png" width="40px"> | <img src="https://github.com/alrra/browser-logos/raw/main/src/opera/opera_256x256.png" width="40px"> | <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Internet_Explorer_10%2B11_logo.svg/1043px-Internet_Explorer_10%2B11_logo.svg.png" width="40px"> 
 | :-: | :-: | :-: | :-: | :-: | :-: |
 | 26 | 9 | 12 | 16 | 12.1 | 10 |
 
