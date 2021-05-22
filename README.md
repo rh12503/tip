@@ -28,7 +28,11 @@ The library will look for the placeholder asset in the same location as the orig
 Placeholder assets have the same name as the original asset but with the extension `.tri`. For example, `image.png` would become `image.tri`. 
 
 ### GUI
-Install the GUI from the releases page. 
+Install the GUI from the [releases page](https://github.com/RH12503/tip/releases). 
+
+<p align="center">
+  <img src="/assets/gui.png" width="50%">
+</p>
 
 ### CLI
 _In the future the command will be added to npx._ 
