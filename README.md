@@ -59,3 +59,7 @@ Every browser that has been updated within the last few years should be supporte
 | 26 | 9 | 12 | 16 | 12.1 | 10 |
 
 All major mobile browsers are also supported including: Safari on iOS, Android WebView, Chrome Android & iOS, Firefox for Android, Opera Android, and Samsung Internet. 
+
+## Contributors
+Thanks to for [@bstncartwright](https://github.com/bstncartwright) for advice and implementing the original concept on [his blog](https://bostonc.dev/)!
+
