@@ -2,10 +2,10 @@
   <img src="/assets/tip.svg" width="130px">
 </p>
 <p align="center">
-  Triangulated image placeholders (not production ready)
+  Triangulated image placeholders 
 </p>
 
-tip is an easy-to-use, efficent, and lightweight library for including triangulated image placeholders. It uses a highly-optimized format over 10x smaller than minified SVG.
+tip is an easy-to-use, efficent, and lightweight library for triangulated image placeholders. It uses a highly-optimized format over 10x smaller than minified SVG. _(Currently not production ready)_
 
 ## Usage
 
@@ -13,17 +13,23 @@ tip is an easy-to-use, efficent, and lightweight library for including triangula
 ```html 
 <head>
   ...
-  <script src="https://cdn.jsdelivr.net/gh/rh12503/tip@latest/lib/placeholder.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/rh12503/tip@latest/lib/tip.min.js"></script>
 </head>
 ```
 
 2. Change the `src` attribute to `data-src` for any image with placeholders.
 
-The library will look for a placeholder asset at the same location as the original image. All operations are done on the original `img` tag, so any formatting applied to the original image will be retained!
+The library will look for the placeholder asset in the same location as the original image. 
 
 ## Generating placeholders
 
+Placeholder assets have the same name as the original asset but with the extension `.tri`. For example, `image.png` would become `image.tri`. 
+
+### GUI
+Install the GUI from the releases page. 
+
 ### CLI
+_In the future the command will be added to npx._ 
 Install the CLI using the command:
 ```
 go get -u github.com/RH12503/tip-backend/tip
