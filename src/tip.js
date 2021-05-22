@@ -1,3 +1,4 @@
+
 window.addEventListener('load', place);
 
 function place() {
@@ -15,32 +16,10 @@ function place() {
 
     for (var i = 0; i < images.length; i++) {
         let image = images[i];
+        image.style.transition = "opacity 1s"
 
-        let objectFit = window.getComputedStyle(image).objectFit
-        let objectPosition = window.getComputedStyle(image).objectPosition;
-
-        var backgroundSize = "contain";
-
-        if (objectFit && objectPosition) {
-            // Support different object-fit properties
-            switch (objectFit) {
-                case "cover":
-                    backgroundSize = "cover";
-                    break;
-                case "fill":
-                    backgroundSize = "100% 100%";
-                    break;
-                case "none":
-                    backgroundSize = "auto";
-                    break;
-            }
-            image.style.backgroundPosition = objectPosition;
-        }
-
-        image.style.backgroundSize = backgroundSize;
-        image.style.opacity = "0";
-        image.style.backgroundRepeat = "no-repeat";
-        image.style.cssText += "transition: background 1s, background-position 0s, background-size 0s !important;";
+        let w = image.width
+        let h = image.height
 
         var xhr = new XMLHttpRequest();
 
@@ -56,6 +35,34 @@ function place() {
 
             if (buffer) {
 
+                let container = document.createElement("div");
+                container.style.display = "inline-block";
+                container.style.position = "relative"
+                container.style.overflow = "hidden"
+                container.style.padding = "0"
+                container.style.margin = "0"
+
+                var originalImage = image.cloneNode();
+
+                image.style.position = "absolute"
+                originalImage.style.verticalAlign = "middle"
+
+                image.parentNode.replaceChild(container, image);
+
+                if (image.style.width || w) {
+                    container.style.width = image.style.width || (w + "px")
+                    originalImage.style.width = "100%"
+                    originalImage.style.setProperty("height", "calc(100% - 4px)");
+                    image.style.width = "100%"
+                }
+                if (image.style.height || h) {
+                    container.style.height = image.style.height || (h + "px")
+                    originalImage.style.height = "100%"
+                    image.style.height = "100%"
+                }
+                container.appendChild(image)
+                container.appendChild(originalImage)
+
                 var data = new DataView(buffer);
                 let triangles = parseData(data);
                 let width = data.getUint16(0, true);
@@ -64,41 +71,29 @@ function place() {
                 let canvas = document.createElement("canvas", { alpha: false });
                 canvas.width = width;
                 canvas.height = height;
-                var blank = canvas.toDataURL();
-                image.src = blank;
+                originalImage.style.transition = ""
+                originalImage.style.opacity = 0
+                originalImage.src = canvas.toDataURL("image/jpeg");
 
                 renderData(canvas, triangles)
 
-                image.style.backgroundImage = `url('${canvas.toDataURL("image/jpeg")}')`;
-                image.style.opacity = "1";
+                image.src = canvas.toDataURL("image/jpeg");
 
-                var originalImage = new Image();
+                let blur = image.dataset.blur;
+                if (blur) {
+                    image.style.filter = `blur(${blur}px)`
+                }
 
-                originalImage.src = image.dataset.src;
+                image.onload = () => {
+                    originalImage.src = image.dataset.src;
 
-                originalImage.onload = () => {
-                    var canvas = document.createElement("canvas");
-                    var ctx = canvas.getContext("2d");
-
-                    canvas.width = originalImage.naturalWidth;
-                    canvas.height = originalImage.naturalHeight;
-                    ctx.drawImage(originalImage, 0, 0);
-
-                    image.style.backgroundImage = `url(${canvas.toDataURL("image/jpeg")})`;
-                    image.ontransitionend = () => {
-                        let attributes = image.attributes;
-
-                        for (var i = 0; i < attributes.length; i++) {
-                            let attribute = attributes[i];
-                            if (attribute.nodeName != "src") {
-                                originalImage.setAttribute(attribute.nodeName, attribute.nodeValue);
-                            }
-                        }
-                        originalImage.style.background = ''
-                        originalImage.style.opacity = ''
-                        originalImage.style.transition = ''
-                        image.parentNode.replaceChild(originalImage, image);
-                    };
+                    originalImage.onload = () => {
+                        originalImage.style.opacity = 1
+                        image.style.opacity = 0
+                        originalImage.addEventListener('transitionend', function () {
+                            image.style.visibility = "hidden"
+                        });
+                    }
                 }
             }
         };
@@ -108,7 +103,9 @@ function place() {
 }
 
 function renderData(canvas, triangles) {
+
     var ctx = canvas.getContext("2d");
+
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     for (var i = 0; i < triangles.length; i++) {
