@@ -21,7 +21,7 @@ Check out [this demo](https://rh12503.github.io/tip/).
 
 2. Change the `src` attribute to `data-src` for any image with placeholders.
 
-The library will look for the placeholder asset in the same location as the original image. 
+The library will look for the placeholder asset in the same location as the original image. To apply a blur filter on the placeholder, use the `data-blur` attribute. 
 
 ## Generating placeholders
 
