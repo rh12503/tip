@@ -7,6 +7,8 @@
 
 tip is an easy-to-use, efficent, and lightweight library for triangulated image placeholders. It uses a highly-optimized format over 10x smaller than minified SVG. _(Currently not production ready)_
 
+Check out [this demo](https://rh12503.github.io/tip/). 
+
 ## Usage
 
 1. Add the library to your HTML:
